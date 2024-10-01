@@ -12,9 +12,14 @@ const port = process.env.PORT || 3000;
 // Middleware para manejar JSON
 app.use(express_1.default.json());
 // Rutas
-app.use('/api', pacienteRoutes_1.default);
-app.use('/api', platoRoutes_1.default);
-app.use('/api', registroRoutes_1.default);
+app.use('/api/pacientes', pacienteRoutes_1.default);
+app.use('/api/platos', platoRoutes_1.default);
+app.use('/api/registros', registroRoutes_1.default);
+// Middleware para manejo de errores
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Error en el servidor');
+});
 app.listen(port, () => {
     console.log(`Servidor escuchando en el puerto ${port}`);
 });

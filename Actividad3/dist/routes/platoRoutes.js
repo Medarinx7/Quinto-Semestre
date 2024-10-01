@@ -1,11 +1,56 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+// src/routes/platoRoutes.ts
 const express_1 = require("express");
 const platoController_1 = require("../controllers/platoController");
 const router = (0, express_1.Router)();
-router.get('/platos', platoController_1.getPlatos);
-router.get('/platos/:id', platoController_1.getPlatoById);
-router.post('/platos', platoController_1.createPlato);
-router.patch('/platos/:id', platoController_1.updatePlato);
-router.delete('/platos/:id', platoController_1.deletePlato);
+router.get('/', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield (0, platoController_1.getAllPlatos)(req, res);
+    }
+    catch (error) {
+        next(error);
+    }
+}));
+router.get('/:id', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield (0, platoController_1.getPlatoById)(req, res);
+    }
+    catch (error) {
+        next(error);
+    }
+}));
+router.post('/', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield (0, platoController_1.createPlato)(req, res);
+    }
+    catch (error) {
+        next(error);
+    }
+}));
+router.put('/:id', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield (0, platoController_1.updatePlato)(req, res);
+    }
+    catch (error) {
+        next(error);
+    }
+}));
+router.delete('/:id', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield (0, platoController_1.deletePlato)(req, res);
+    }
+    catch (error) {
+        next(error);
+    }
+}));
 exports.default = router;

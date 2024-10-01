@@ -8,78 +8,83 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deletePlato = exports.updatePlato = exports.createPlato = exports.getPlatoById = exports.getPlatos = void 0;
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient();
+exports.deletePlato = exports.updatePlato = exports.createPlato = exports.getPlatoById = exports.getAllPlatos = void 0;
+const prismaClient_1 = __importDefault(require("../prismaClient"));
 // Obtener todos los platos
-const getPlatos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllPlatos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const platos = yield prisma.plato.findMany();
-        res.json(platos);
+        const platos = yield prismaClient_1.default.plato.findMany();
+        return res.json(platos);
     }
     catch (error) {
-        res.status(500).json({ error: 'Error al obtener los platos' });
+        return res.status(500).json({ message: 'Error en el servidor' });
     }
 });
-exports.getPlatos = getPlatos;
+exports.getAllPlatos = getAllPlatos;
 // Obtener un plato por ID
 const getPlatoById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
     try {
-        const plato = yield prisma.plato.findUnique({ where: { id: Number(id) } });
-        if (!plato)
-            return res.status(404).json({ error: 'Plato no encontrado' });
-        res.json(plato);
+        const plato = yield prismaClient_1.default.plato.findUnique({
+            where: { id: Number(req.params.id) },
+        });
+        if (!plato) {
+            return res.status(404).json({ message: 'Plato no encontrado' });
+        }
+        return res.json(plato);
     }
     catch (error) {
-        res.status(500).json({ error: 'Error al obtener el plato' });
+        return res.status(500).json({ message: 'Error en el servidor' });
     }
 });
 exports.getPlatoById = getPlatoById;
 // Crear un nuevo plato
 const createPlato = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { nombre, precio, categoria } = req.body;
+    const { nombre, precio, categoria, descripcion } = req.body;
     try {
-        const nuevoPlato = yield prisma.plato.create({
+        const nuevoPlato = yield prismaClient_1.default.plato.create({
             data: {
                 nombre,
                 precio,
                 categoria,
+                descripcion, // Asegúrate de incluir 'descripcion'
             },
         });
-        res.status(201).json(nuevoPlato);
+        return res.status(201).json(nuevoPlato);
     }
     catch (error) {
-        res.status(500).json({ error: 'Error al crear el plato' });
+        return res.status(500).json({ message: 'Error en el servidor' });
     }
 });
 exports.createPlato = createPlato;
-// Modificar un plato
+// Actualizar un plato
 const updatePlato = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const { nombre, precio, categoria } = req.body;
+    const { nombre, precio, categoria, descripcion } = req.body;
     try {
-        const platoActualizado = yield prisma.plato.update({
-            where: { id: Number(id) },
-            data: { nombre, precio, categoria },
+        const platoActualizado = yield prismaClient_1.default.plato.update({
+            where: { id: Number(req.params.id) },
+            data: { nombre, precio, categoria, descripcion },
         });
-        res.json(platoActualizado);
+        return res.json(platoActualizado);
     }
     catch (error) {
-        res.status(500).json({ error: 'Error al actualizar el plato' });
+        return res.status(500).json({ message: 'Error en el servidor' });
     }
 });
 exports.updatePlato = updatePlato;
 // Eliminar un plato
 const deletePlato = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
     try {
-        yield prisma.plato.delete({ where: { id: Number(id) } });
-        res.status(204).send();
+        yield prismaClient_1.default.plato.delete({
+            where: { id: Number(req.params.id) },
+        });
+        return res.status(204).send();
     }
     catch (error) {
-        res.status(500).json({ error: 'Error al eliminar el plato' });
+        return res.status(500).json({ message: 'Error en el servidor' });
     }
 });
 exports.deletePlato = deletePlato;

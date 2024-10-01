@@ -8,83 +8,90 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteRegistro = exports.updateRegistro = exports.createRegistro = exports.getRegistroById = exports.getRegistros = void 0;
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient();
+exports.deleteRegistro = exports.updateRegistro = exports.createRegistro = exports.getRegistroById = exports.getAllRegistros = void 0;
+const prismaClient_1 = __importDefault(require("../prismaClient"));
 // Obtener todos los registros
-const getRegistros = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllRegistros = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const registros = yield prisma.registro.findMany({
-            include: { paciente: true, plato: true },
-        });
-        res.json(registros);
+        const registros = yield prismaClient_1.default.registro.findMany();
+        return res.json(registros);
     }
     catch (error) {
-        res.status(500).json({ error: 'Error al obtener los registros' });
+        return res.status(500).json({ message: 'Error en el servidor' });
     }
 });
-exports.getRegistros = getRegistros;
+exports.getAllRegistros = getAllRegistros;
 // Obtener un registro por ID
 const getRegistroById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
     try {
-        const registro = yield prisma.registro.findUnique({
-            where: { id: Number(id) },
-            include: { paciente: true, plato: true },
+        const registro = yield prismaClient_1.default.registro.findUnique({
+            where: { id: Number(req.params.id) },
         });
-        if (!registro)
-            return res.status(404).json({ error: 'Registro no encontrado' });
-        res.json(registro);
+        if (!registro) {
+            return res.status(404).json({ message: 'Registro no encontrado' });
+        }
+        return res.json(registro);
     }
     catch (error) {
-        res.status(500).json({ error: 'Error al obtener el registro' });
+        return res.status(500).json({ message: 'Error en el servidor' });
     }
 });
 exports.getRegistroById = getRegistroById;
 // Crear un nuevo registro
 const createRegistro = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { pacienteId, platoId, fecha } = req.body;
+    const { idPaciente, idPlato, fecha, numeroCalorias, numeroPorciones } = req.body;
     try {
-        const nuevoRegistro = yield prisma.registro.create({
+        const nuevoRegistro = yield prismaClient_1.default.registro.create({
             data: {
-                pacienteId,
-                platoId,
-                fecha,
+                paciente: { connect: { id: Number(idPaciente) } },
+                plato: { connect: { id: Number(idPlato) } },
+                fecha: new Date(fecha),
+                numeroCalorias: Number(numeroCalorias),
+                numeroPorciones: Number(numeroPorciones),
             },
         });
-        res.status(201).json(nuevoRegistro);
+        return res.status(201).json(nuevoRegistro);
     }
     catch (error) {
-        res.status(500).json({ error: 'Error al crear el registro' });
+        return res.status(500).json({ message: 'Error en el servidor' });
     }
 });
 exports.createRegistro = createRegistro;
-// Modificar un registro
+// Actualizar un registro
 const updateRegistro = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const { pacienteId, platoId, fecha } = req.body;
+    const { idPaciente, idPlato, fecha, numeroCalorias, numeroPorciones } = req.body;
     try {
-        const registroActualizado = yield prisma.registro.update({
-            where: { id: Number(id) },
-            data: { pacienteId, platoId, fecha },
+        const registroActualizado = yield prismaClient_1.default.registro.update({
+            where: { id: Number(req.params.id) },
+            data: {
+                paciente: { connect: { id: Number(idPaciente) } },
+                plato: { connect: { id: Number(idPlato) } },
+                fecha: new Date(fecha),
+                numeroCalorias: Number(numeroCalorias),
+                numeroPorciones: Number(numeroPorciones),
+            },
         });
-        res.json(registroActualizado);
+        return res.json(registroActualizado);
     }
     catch (error) {
-        res.status(500).json({ error: 'Error al actualizar el registro' });
+        return res.status(500).json({ message: 'Error en el servidor' });
     }
 });
 exports.updateRegistro = updateRegistro;
 // Eliminar un registro
 const deleteRegistro = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
     try {
-        yield prisma.registro.delete({ where: { id: Number(id) } });
-        res.status(204).send();
+        yield prismaClient_1.default.registro.delete({
+            where: { id: Number(req.params.id) },
+        });
+        return res.status(204).send();
     }
     catch (error) {
-        res.status(500).json({ error: 'Error al eliminar el registro' });
+        return res.status(500).json({ message: 'Error en el servidor' });
     }
 });
 exports.deleteRegistro = deleteRegistro;

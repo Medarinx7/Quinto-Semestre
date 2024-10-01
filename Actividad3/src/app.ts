@@ -6,7 +6,7 @@ import platoRoutes from './routes/platoRoutes';
 import registroRoutes from './routes/registroRoutes';
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 
 app.use(express.json());
