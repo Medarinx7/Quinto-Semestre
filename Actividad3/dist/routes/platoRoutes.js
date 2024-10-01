@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const platoController_1 = require("../controllers/platoController");
+const router = (0, express_1.Router)();
+router.get('/platos', platoController_1.getPlatos);
+router.get('/platos/:id', platoController_1.getPlatoById);
+router.post('/platos', platoController_1.createPlato);
+router.patch('/platos/:id', platoController_1.updatePlato);
+router.delete('/platos/:id', platoController_1.deletePlato);
+exports.default = router;
