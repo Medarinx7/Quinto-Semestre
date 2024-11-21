@@ -1,0 +1,34 @@
+// Conexión a la base de datos
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Generador del cliente Prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Modelos
+model Paciente {
+  id        Int        @id @default(autoincrement())
+  nombre    String
+  edad      Int
+  registros Registro[] // Relación con registros
+}
+
+model Plato {
+  id        Int        @id @default(autoincrement())
+  nombre    String
+  calorias  Float
+  registros Registro[] // Relación con registros
+}
+
+model Registro {
+  id         Int      @id @default(autoincrement())
+  pacienteId Int
+  paciente   Paciente @relation(fields: [pacienteId], references: [id]) // Relación con Paciente
+  platoId    Int
+  plato      Plato    @relation(fields: [platoId], references: [id]) // Relación con Plato
+  fecha      DateTime @default(now())
+}

@@ -1,0 +1,52 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreatePacienteInput {
+  edad: Float!
+  nombre: String!
+}
+
+input CreatePlatoInput {
+  calorias: Int!
+  nombre: String!
+  precio: Int!
+}
+
+type Mutation {
+  createPaciente(data: CreatePacienteInput!): Paciente!
+  createPlato(data: CreatePlatoInput!): Plato!
+  removePaciente(id: Float!): Boolean!
+  removePlato(id: Float!): Boolean!
+  updatePaciente(data: UpdatePacienteInput!, id: Float!): Paciente!
+  updatePlato(data: UpdatePlatoInput!, id: Float!): Plato!
+}
+
+type Paciente {
+  direccion: String!
+  edad: Float!
+  id: Int!
+  nombre: String!
+}
+
+type Plato {
+  calorias: Int!
+  id: Int!
+  nombre: String!
+}
+
+type Query {
+  findAll: [Plato!]!
+  findOne(id: Float!): Plato!
+}
+
+input UpdatePacienteInput {
+  edad: Float
+  nombre: String
+}
+
+input UpdatePlatoInput {
+  calorias: Int!
+  nombre: String!
+  precio: Int!
+}
